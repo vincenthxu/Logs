@@ -23,7 +23,7 @@
                 // if birthday has not yet occurred, throw exception
                 // else allow set
 
-                if(DateOnly.FromDateTime(DateTime.Today) < value)
+                if (DateOnly.FromDateTime(DateTime.Today) < value)
                 {
                     throw new InvalidOperationException("Date of birth has not yet occurred!");
                 }
