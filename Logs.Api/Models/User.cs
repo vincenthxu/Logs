@@ -2,6 +2,7 @@
 {
     public class User
     {
+        private DateOnly dateOfBirth;
         #region Constructors
         public User(string name, DateOnly dateOfBirth)
         {
@@ -14,7 +15,21 @@
         #region Properties
         public Guid Id { get; private set; }
         public string? Name { get; set; }
-        public DateOnly DateOfBirth { get; set; }
+        public DateOnly DateOfBirth
+        {
+            get => dateOfBirth;
+            set
+            {
+                // if birthday has not yet occurred, throw exception
+                // else allow set
+
+                if(DateOnly.FromDateTime(DateTime.Today) < value)
+                {
+                    throw new InvalidOperationException("Date of birth has not yet occurred!");
+                }
+                dateOfBirth = value;
+            }
+        }
         public int Age
         {
             get
