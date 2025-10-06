@@ -2,7 +2,10 @@
 {
     public class User
     {
+        #region Fields
         private DateOnly dateOfBirth;
+        #endregion
+
         #region Constructors
         public User(string name, DateOnly dateOfBirth)
         {

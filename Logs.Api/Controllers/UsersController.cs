@@ -94,6 +94,10 @@ namespace Logs.Api.Controllers
                 return NotFound();
             }
 
+            // when a User is deleted, also delete all of their associated Entries
+            var entries = _context.Entries.Where(e => e.UserId == user.Id);
+            _context.Entries.RemoveRange(entries.ToArray());
+
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
