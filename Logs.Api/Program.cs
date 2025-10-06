@@ -1,3 +1,5 @@
+using Logs.Api.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Logs.Api
 {
@@ -13,6 +15,11 @@ namespace Logs.Api
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // Configure app specific database context
+            builder.Services.AddDbContext<LogsContext>(options =>
+                options.UseSqlite(builder.Configuration.GetConnectionString("sqlite"))
+            );
 
             var app = builder.Build();
 
