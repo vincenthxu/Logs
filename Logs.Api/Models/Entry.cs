@@ -23,7 +23,7 @@ namespace Logs.Api.Models
         public int Id { get; set; }
         public Guid UserId { get; private set; }
         [JsonIgnore]
-        public virtual User User { get; set; } // `virtual` enables lazy loading and establishes UserId as a foreign key
+        public virtual User? User { get; set; }
         public DateOnly Date { get; set; }
         public TimeOnly Time { get; set; }
         public BristolStoolScale BristolStoolScale { get; set; }
