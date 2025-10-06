@@ -3,7 +3,8 @@ name: Build solution
 on:
     push:
         branches:
-          - master
+            - master
+            - dev
 
 jobs:
     build:
