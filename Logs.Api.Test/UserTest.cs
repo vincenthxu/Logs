@@ -7,18 +7,19 @@ namespace Logs.Api.Test
     public class UserTest
     {
         private User? user;
-        private DateTime today;
+        private DateOnly today;
         [SetUp]
         public void SetUp()
         {
             user = null;
-            today = DateTime.Today;
+            today = DateOnly.FromDateTime(DateTime.Today);
         }
         [Test]
         public void DateOfBirth_AfterToday_ThrowsException()
         {
+            DateOnly tomorrow = today.AddDays(1);
             Assert.Throws<InvalidOperationException>(() =>
-                user = new(name: "Test", dateOfBirth: new DateOnly(today.Year, today.Month, today.Day + 1))
+                user = new(name: "Test", dateOfBirth: tomorrow)
             );
             Assert.That(user, Is.Null);
         }
@@ -26,15 +27,18 @@ namespace Logs.Api.Test
         [Test]
         public void DateOfBirth_Today_InstantiatesUser()
         {
-            user = new(name: "Test", dateOfBirth: new DateOnly(today.Year, today.Month, today.Day));
+            user = new(name: "Test", dateOfBirth: today);
             Assert.That(user, Is.Not.Null);
+            Assert.That(user.DateOfBirth, Is.EqualTo(today));
         }
 
         [Test]
         public void DateOfBirth_BeforeToday_InstantiatesUser()
         {
-            user = new(name: "Test", dateOfBirth: new DateOnly(today.Year, today.Month, today.Day - 1));
+            DateOnly yesterday = today.AddDays(-1);
+            user = new(name: "Test", dateOfBirth: yesterday);
             Assert.That(user, Is.Not.Null);
+            Assert.That(user.DateOfBirth, Is.EqualTo(yesterday));
         }
     }
 }
