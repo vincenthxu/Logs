@@ -1,4 +1,5 @@
 ﻿using Logs.Api.Models;
+using System.Text.Json;
 using Microsoft.CodeAnalysis.FlowAnalysis;
 
 namespace Logs.Api.Test
@@ -62,6 +63,16 @@ namespace Logs.Api.Test
             int years = 20;
             user = new(name: "test2", dateOfBirth: today.AddYears(-years).AddDays(1));
             Assert.That(user.Age, Is.EqualTo(years - 1));
+        }
+
+        [Test]
+        public void ToString_OnUserInstance_ReturnsJsonSerializedString()
+        {
+            user = new(name: "test", dateOfBirth: today);
+            var deserializedObject = JsonSerializer.Deserialize<User>(user.ToString());
+            Assert.That(deserializedObject, Is.TypeOf(typeof(User)));
+            Assert.That(deserializedObject.Name, Is.EqualTo("test"));
+            Assert.That(deserializedObject.DateOfBirth, Is.EqualTo(today));
         }
     }
 }
