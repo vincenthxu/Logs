@@ -9,13 +9,13 @@ namespace Logs.Api.Test
         private User? user;
         private DateOnly today;
         [SetUp]
-        public void SetUp()
+        public void Setup()
         {
             user = null;
             today = DateOnly.FromDateTime(DateTime.Today);
         }
         [Test]
-        public void DateOfBirth_AfterToday_ThrowsException()
+        public void SetDateOfBirth_AfterToday_ThrowsException()
         {
             DateOnly tomorrow = today.AddDays(1);
             Assert.Throws<InvalidOperationException>(() =>
@@ -25,7 +25,7 @@ namespace Logs.Api.Test
         }
 
         [Test]
-        public void DateOfBirth_Today_InstantiatesUser()
+        public void SetDateOfBirth_Today_InstantiatesUser()
         {
             user = new(name: "Test", dateOfBirth: today);
             Assert.That(user, Is.Not.Null);
@@ -33,12 +33,35 @@ namespace Logs.Api.Test
         }
 
         [Test]
-        public void DateOfBirth_BeforeToday_InstantiatesUser()
+        public void SetDateOfBirth_BeforeToday_InstantiatesUser()
         {
             DateOnly yesterday = today.AddDays(-1);
             user = new(name: "Test", dateOfBirth: yesterday);
             Assert.That(user, Is.Not.Null);
             Assert.That(user.DateOfBirth, Is.EqualTo(yesterday));
+        }
+
+        [Test]
+        public void GetAge_DateOfBirthIsThisYear_ReturnsZero()
+        {
+            user = new(name: "test", dateOfBirth: today);
+            Assert.That(user.Age, Is.Zero);
+        }
+
+        [Test]
+        public void GetAge_DateOfBirthThisYearHasPassed_ReturnsYearsSinceYearOfBirth()
+        {
+            int years = 20;
+            user = new(name: "test1", dateOfBirth: today.AddYears(-years));
+            Assert.That(user.Age, Is.EqualTo(years));
+        }
+
+        [Test]
+        public void GetAge_DateOfBirthThisYearHasNotPassed_ReturnsYearsSinceYearOfBirthMinusOne()
+        {
+            int years = 20;
+            user = new(name: "test2", dateOfBirth: today.AddYears(-years).AddDays(1));
+            Assert.That(user.Age, Is.EqualTo(years - 1));
         }
     }
 }
