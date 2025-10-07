@@ -16,7 +16,7 @@
         #endregion
 
         #region Properties
-        public Guid Id { get; private set; }
+        public Guid Id { get; internal set; }
         public string? Name { get; set; }
         public DateOnly DateOfBirth
         {

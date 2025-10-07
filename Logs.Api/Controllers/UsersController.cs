@@ -47,10 +47,7 @@ namespace Logs.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(Guid id, User user)
         {
-            if (id != user.Id)
-            {
-                return BadRequest();
-            }
+            user.Id = id;
 
             _context.Entry(user).State = EntityState.Modified;
 
