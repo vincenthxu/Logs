@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.FlowAnalysis;
 namespace Logs.Api.Test
 {
     [TestFixture]
-    public class UserTest
+    public class UserTests
     {
         private User? user;
         private DateOnly today;

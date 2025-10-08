@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace Logs.Api.Test;
 
-public class EntryTest
+public class EntryTests
 {
     private User user;
     private Entry entry;
