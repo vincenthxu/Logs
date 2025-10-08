@@ -1,6 +1,5 @@
 ﻿using Logs.Api.Models;
 using System.Text.Json;
-using Microsoft.CodeAnalysis.FlowAnalysis;
 
 namespace Logs.Api.Test
 {
@@ -15,6 +14,7 @@ namespace Logs.Api.Test
             user = null;
             today = DateOnly.FromDateTime(DateTime.Today);
         }
+
         [Test]
         public void SetDateOfBirth_AfterToday_ThrowsException()
         {
