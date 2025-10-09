@@ -15,6 +15,7 @@ namespace Logs.Api
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddOpenApiDocument();
 
             // Configure app specific database context
             builder.Services.AddDbContext<LogsContext>(options =>
@@ -35,6 +36,7 @@ namespace Logs.Api
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                app.UseOpenApi();
             }
 
             app.UseAuthorization();
