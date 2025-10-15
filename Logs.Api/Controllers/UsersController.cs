@@ -47,6 +47,12 @@ namespace Logs.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(Guid id, User user)
         {
+            // if user has invalid date of birth, return bad request
+            if (user.HasInvalidDateOfBirth)
+            {
+                return BadRequest("Date of birth has not yet occurred!");
+            }
+
             user.Id = id;
 
             _context.Entry(user).State = EntityState.Modified;
@@ -75,6 +81,11 @@ namespace Logs.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
+            // if user has invalid date of birth, return bad request
+            if (user.HasInvalidDateOfBirth)
+            {
+                return BadRequest("Date of birth has not yet occurred!");
+            }
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 

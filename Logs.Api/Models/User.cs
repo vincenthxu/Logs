@@ -16,6 +16,8 @@
         #endregion
 
         #region Properties
+        internal bool HasValidDateOfBirth { get; set; } = true;
+        internal bool HasInvalidDateOfBirth => !HasValidDateOfBirth;
         public Guid Id { get; internal set; }
         public string? Name { get; set; }
         public DateOnly DateOfBirth
@@ -23,12 +25,12 @@
             get => dateOfBirth;
             set
             {
-                // if birthday has not yet occurred, throw exception
-                // else allow set
+                // if birthday has not yet occurred, indicate invalid date of birth
+                // else indicate valid and allow set
 
                 if (DateOnly.FromDateTime(DateTime.Today) < value)
                 {
-                    throw new InvalidOperationException("Date of birth has not yet occurred!");
+                    HasValidDateOfBirth = false;
                 }
                 else
                 {
