@@ -16,13 +16,11 @@ namespace Logs.Api.Test
         }
 
         [Test]
-        public void SetDateOfBirth_AfterToday_ThrowsException()
+        public void SetDateOfBirth_AfterToday_SetsInvalidDateOfBirthFlag()
         {
             DateOnly tomorrow = today.AddDays(1);
-            Assert.Throws<InvalidOperationException>(() =>
-                user = new(name: "Test", dateOfBirth: tomorrow)
-            );
-            Assert.That(user, Is.Null);
+            user = new(name: "Test", dateOfBirth: tomorrow);
+            Assert.That(user.HasInvalidDateOfBirth, Is.True);
         }
 
         [Test]

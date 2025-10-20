@@ -1,4 +1,6 @@
-﻿namespace Logs.Api.Models
+﻿using System.Text.Json.Serialization;
+
+namespace Logs.Api.Models
 {
     public class User
     {
@@ -17,7 +19,8 @@
 
         #region Properties
         internal bool HasValidDateOfBirth { get; set; } = true;
-        internal bool HasInvalidDateOfBirth => !HasValidDateOfBirth;
+        [JsonIgnore]
+        public bool HasInvalidDateOfBirth => !HasValidDateOfBirth;
         public Guid Id { get; internal set; }
         public string? Name { get; set; }
         public DateOnly DateOfBirth
