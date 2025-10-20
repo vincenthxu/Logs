@@ -9,6 +9,17 @@ namespace Logs.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Allow CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
             // Add services to the container.
 
             builder.Services.AddControllers();
@@ -23,6 +34,8 @@ namespace Logs.Api
             );
 
             var app = builder.Build();
+
+            app.UseCors();
 
             using (var scope = app.Services.CreateScope())
             {
