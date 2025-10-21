@@ -1,4 +1,5 @@
 using Logs.Api.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Logs.Api
@@ -33,13 +34,29 @@ namespace Logs.Api
                 options.UseSqlite(builder.Configuration.GetConnectionString("sqlite"))
             );
 
+            // Configure auth
+            builder.Services.AddDbContext<IdentityContext>(options =>
+                options.UseSqlite(builder.Configuration.GetConnectionString("auth"))
+            );
+            builder.Services.AddAuthentication();
+            builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+                .AddEntityFrameworkStores<IdentityContext>();
+
             var app = builder.Build();
 
             app.UseCors();
+            app.MapIdentityApi<IdentityUser>();
 
             using (var scope = app.Services.CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<LogsContext>();
+                db.Database.EnsureDeleted();
+                db.Database.EnsureCreated();
+            }
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<IdentityContext>();
                 db.Database.EnsureDeleted();
                 db.Database.EnsureCreated();
             }

@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Logs.Api.Data;
 using Logs.Api.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Logs.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class EntriesController : ControllerBase
     {
         private readonly LogsContext _context;

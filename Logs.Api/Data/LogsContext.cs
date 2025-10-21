@@ -8,7 +8,7 @@ namespace Logs.Api.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Entry> Entries { get; set; }
 
-        public LogsContext(DbContextOptions options) : base(options)
+        public LogsContext(DbContextOptions<LogsContext> options) : base(options)
         {
 
         }

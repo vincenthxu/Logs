@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Logs.Api.Data;
 using Logs.Api.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Logs.Api.Controllers
 {
@@ -15,14 +16,17 @@ namespace Logs.Api.Controllers
     public class UsersController : ControllerBase
     {
         private readonly LogsContext _context;
+        private readonly IdentityContext _auth;
 
-        public UsersController(LogsContext context)
+        public UsersController(LogsContext context, IdentityContext auth)
         {
             _context = context;
+            _auth = auth;
         }
 
         // GET: api/Users
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             return await _context.Users.ToListAsync();
@@ -30,6 +34,7 @@ namespace Logs.Api.Controllers
 
         // GET: api/Users/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<User>> GetUser(Guid id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -45,6 +50,7 @@ namespace Logs.Api.Controllers
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutUser(Guid id, User user)
         {
             // if user has invalid date of birth, return bad request
@@ -81,6 +87,12 @@ namespace Logs.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
+            var result = _auth.Users.Where(u => u.Email == user.Email).ToList();
+            if (result.Count != 1)
+            {
+                return Unauthorized();
+            }
+
             // if user has invalid date of birth, return bad request
             if (user.HasInvalidDateOfBirth)
             {
@@ -94,6 +106,7 @@ namespace Logs.Api.Controllers
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             var user = await _context.Users.FindAsync(id);
