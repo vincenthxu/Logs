@@ -11,7 +11,7 @@ namespace Logs.Api.Test
         [SetUp]
         public void Setup()
         {
-            user = new(name: "test", dateOfBirth: DateOnly.FromDateTime(DateTime.Today));
+            user = new(name: "test", dateOfBirth: DateOnly.FromDateTime(DateTime.Today), email: "a@a.com");
             entry = new(
                 userId: user.Id,
                 date: DateOnly.FromDateTime(DateTime.Today),

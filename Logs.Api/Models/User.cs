@@ -9,10 +9,11 @@ namespace Logs.Api.Models
         #endregion
 
         #region Constructors
-        public User(string name, DateOnly dateOfBirth)
+        public User(string name, string email, DateOnly dateOfBirth)
         {
             Id = Guid.NewGuid();
             Name = name;
+            Email = email;
             DateOfBirth = dateOfBirth;
         }
         #endregion
@@ -23,6 +24,7 @@ namespace Logs.Api.Models
         public bool HasInvalidDateOfBirth => !HasValidDateOfBirth;
         public Guid Id { get; internal set; }
         public string? Name { get; set; }
+        public string? Email { get; set; }
         public DateOnly DateOfBirth
         {
             get => dateOfBirth;
