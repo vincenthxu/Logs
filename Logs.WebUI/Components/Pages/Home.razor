@@ -1,0 +1,78 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@inject Client client
+@inject SessionState session
+@inject NavigationManager Navigation
+
+@if (entries == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <FluentCard Style="display:flex; justify-content: center; align-items: center">
+        <FluentStack Orientation="Orientation.Vertical" Style="height:100%">
+            <FluentStack Orientation="Orientation.Horizontal">
+                <FluentButton IconStart="@(new Icons.Regular.Size24.Add())" OnClick="handleCreate">Create</FluentButton>
+                <FluentButton IconStart="@(new Icons.Regular.Size24.SignOut())" OnClick="handleLogout">Sign out</FluentButton>
+            </FluentStack>
+            
+            <FluentDataGrid RowSize="DataGridRowSize.Large" Items="@entries" Style="height: fit-content; width:100%; align-content: start">
+                <PropertyColumn Property="@(e => e.Id)" />
+                <PropertyColumn Property="@(e => e.Date)" />
+                <PropertyColumn Property="@(e => e.Time)" />
+                <PropertyColumn Property="@(e => e.BristolStoolScale)" />
+                <PropertyColumn Property="@(e => e.Notes)" />
+                <TemplateColumn Title="Actions" Align="@Align.End">
+                    <FluentAnchor IconStart="@(new Icons.Regular.Size24.Edit())" Href="@($"/entry/{context.Id}")" />
+                    <FluentButton IconStart="@(new Icons.Regular.Size24.Delete())" OnClick="() => handleDelete(context.Id)" />
+                </TemplateColumn>
+            </FluentDataGrid>
+        </FluentStack>
+    </FluentCard>
+}
+
+
+@code {
+    private IQueryable<Entry>? entries;
+
+    public void handleCreate()
+    {
+        Navigation.NavigateTo("/entry");
+    }
+
+    public async Task handleLogout()
+    {
+        session.CurrentUser = null;
+        session.AccessToken = null;
+
+        await client.LogoutAsync(new object());
+
+        Navigation.NavigateTo("/signin");
+    }
+
+    public async Task handleDelete(int id)
+    {
+        await client.EntriesDELETEAsync(id);
+        await LoadEntries();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadEntries();
+        await base.OnInitializedAsync();
+        if (!session.IsLoggedIn)
+        {
+            Navigation.NavigateTo("/signin");
+        }
+    }
+
+    private async Task LoadEntries()
+    {
+        if(session.IsLoggedIn)
+        {
+            var entriesList = await client.EntriesByUserIdAsync(session.CurrentUser.Id);
+            entries = entriesList.AsQueryable();
+        }
+    }
+}
