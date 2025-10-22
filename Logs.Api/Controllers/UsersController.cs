@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Logs.Api.Data;
 using Logs.Api.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Logs.Api.Controllers
 {
@@ -26,7 +20,6 @@ namespace Logs.Api.Controllers
 
         // GET: api/Users
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             return await _context.Users.ToListAsync();
@@ -34,7 +27,8 @@ namespace Logs.Api.Controllers
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<User>> GetUser(Guid id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -50,7 +44,8 @@ namespace Logs.Api.Controllers
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        [Authorize]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> PutUser(Guid id, User user)
         {
             // if user has invalid date of birth, return bad request
@@ -85,6 +80,7 @@ namespace Logs.Api.Controllers
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<User>> PostUser(User user)
         {
             var result = _auth.Users.Where(u => u.Email == user.Email).ToList();
@@ -106,7 +102,7 @@ namespace Logs.Api.Controllers
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
-        [Authorize]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             var user = await _context.Users.FindAsync(id);
