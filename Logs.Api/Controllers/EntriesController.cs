@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Logs.Api.Data;
 using Logs.Api.Models;
@@ -37,6 +37,16 @@ namespace Logs.Api.Controllers
             }
 
             return entry;
+        }
+
+        // GET: api/Entries/user/{id}
+        [HttpGet("user/{id}")]
+        public async Task<ActionResult<IEnumerable<Entry>>> GetEntriesByUserId(Guid id)
+        {
+            var entries = await _context.Entries
+                .Where(e => e.UserId == id)
+                .ToListAsync();
+            return entries;
         }
 
         // PUT: api/Entries/5

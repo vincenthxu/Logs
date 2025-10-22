@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Logs.Api.Data;
 using Logs.Api.Models;
@@ -38,6 +38,20 @@ namespace Logs.Api.Controllers
                 return NotFound();
             }
 
+            return user;
+        }
+
+        // GET: api/Users/byEmail/{email}
+        [HttpGet("byEmail/{email}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<User>> GetUserByEmail(string email)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null)
+            {
+                return NotFound();
+            }
             return user;
         }
 
@@ -114,6 +128,9 @@ namespace Logs.Api.Controllers
             // when a User is deleted, also delete all of their associated Entries
             var entries = _context.Entries.Where(e => e.UserId == user.Id);
             _context.Entries.RemoveRange(entries.ToArray());
+
+            // when a User is deleted, also unregister them
+            _auth.Users.Where(u => u.Email == user.Email).ExecuteDelete();
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
