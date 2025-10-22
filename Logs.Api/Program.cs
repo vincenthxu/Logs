@@ -39,7 +39,14 @@ namespace Logs.Api
                 options.UseSqlite(builder.Configuration.GetConnectionString("auth"))
             );
             builder.Services.AddAuthentication();
-            builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+            builder.Services.AddIdentityApiEndpoints<IdentityUser>(options =>
+                {
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequiredLength = 6;
+                })
                 .AddEntityFrameworkStores<IdentityContext>();
 
             var app = builder.Build();
