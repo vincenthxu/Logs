@@ -11,6 +11,7 @@
             <FluentTextField @bind-Value="userModel.Email" Label="Email" Style="width:100%" Disabled="true" />
             <FluentTextField @bind-Value="userModel.Name" Label="Name" Style="width:100%" />
             <FluentDatePicker @bind-Value="userModel.DateOfBirth" Label="Date of birth" Style="width:100%" DisabledDateFunc="DisabledDay"/>
+            <FluentTextField @bind-Value="userModel.Age" Label="Age" Style="width:100%" Disabled="true"/>
             <FluentButton OnClick="handleSave" Style="width:100%">Save</FluentButton>
             <FluentAnchor Href="/" Style="width:100%">Cancel</FluentAnchor>
         </EditForm>
@@ -54,6 +55,7 @@
         userModel.Email = client.User.Email;
         userModel.DateOfBirth = client.User.DateOfBirth.ToDateTime(new TimeOnly());
         userModel.Id = client.User.Id.ToString();
+        userModel.Age = client.User.Age.ToString();
     }
 
     public class UserViewModel
@@ -66,5 +68,7 @@
 
         [Required(ErrorMessage = "Date of birth is required")]
         public DateTime? DateOfBirth { get; set; }
+
+        public string? Age { get; set; }
     }
 }
