@@ -16,21 +16,25 @@ namespace Logs.WebUI
             builder.Services.AddFluentUIComponents();
 
             // Configure session state
-            builder.Services.AddSingleton<SessionState>(
-                new SessionState() {
-                    CurrentUser = null,
-                }
-            );
+            //builder.Services.AddSingleton<SessionState>(
+            //    new SessionState() {
+            //        CurrentUser = null,
+            //    }
+            //);
 
             // Configure API client
             var url = "http://localhost:5194";
-            builder.Services.AddSingleton<Client>(
-                new Client(
-                    url,
-                    new HttpClient()
-                    {
-                        BaseAddress = new Uri(url)
-                    }));
+            //builder.Services.AddSingleton<Client>(
+            //    new Client(
+            //        url,
+            //        new HttpClient()
+            //        {
+            //            BaseAddress = new Uri(url)
+            //        }));
+
+            builder.Services.AddScoped<Client>(
+                client => new Client(url, new HttpClient() { BaseAddress = new Uri(url)})
+            );
 
             var app = builder.Build();
 

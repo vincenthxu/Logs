@@ -1,6 +1,6 @@
 ﻿@page "/"
 @inject Client client
-@inject SessionState session
+@* @inject SessionState session *@
 @inject NavigationManager Navigation
 
 @if (entries == null)
@@ -11,7 +11,7 @@ else
 {
     <FluentCard Style="display:flex; justify-content: center; align-items: center">
         <FluentStack Orientation="Orientation.Vertical" Style="height:100%">
-            <FluentStack Orientation="Orientation.Horizontal">
+            <FluentStack Orientation="Orientation.Horizontal" Style="width: 100%">
                 <FluentButton IconStart="@(new Icons.Regular.Size24.Add())" OnClick="handleCreate">Create</FluentButton>
                 <FluentButton IconStart="@(new Icons.Regular.Size24.SignOut())" OnClick="handleLogout">Sign out</FluentButton>
             </FluentStack>
@@ -42,7 +42,8 @@ else
 
     public async Task handleLogout()
     {
-        session.CurrentUser = null;
+        // session.CurrentUser = null;
+        client.ClearUser();
         client.RemoveBearerToken();
 
         await client.LogoutAsync(new object());
@@ -60,7 +61,7 @@ else
     {
         await LoadEntries();
         await base.OnInitializedAsync();
-        if (!session.IsLoggedIn)
+        if (!client.IsLoggedIn)
         {
             Navigation.NavigateTo("/signin");
         }
@@ -68,9 +69,9 @@ else
 
     private async Task LoadEntries()
     {
-        if(session.IsLoggedIn)
+        if(client.IsLoggedIn)
         {
-            var entriesList = await client.EntriesByUserIdAsync(session.CurrentUser.Id);
+            var entriesList = await client.EntriesByUserIdAsync(client.User.Id);
             entries = entriesList.AsQueryable();
         }
     }

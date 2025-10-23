@@ -1,22 +1,30 @@
 ﻿@page "/entry"
 @page "/entry/{Id:int}"
 @inject Client client
-@inject SessionState session
+@* @inject SessionState session *@
 @inject NavigationManager Navigation
 @using System.ComponentModel.DataAnnotations
 
-<FluentGrid>
-    <FluentCard>
-        <FluentEditForm Model="@entryModel">
-            <FluentDatePicker Required="true" @bind-Value="entryModel.Date" Label="Date" DisabledDateFunc="DisabledDay" />
-            <FluentTimePicker Required="true" @bind-Value="entryModel.Time" Label="Time" />
-            <FluentSlider @bind-Value="entryModel.BristolStoolScale" Label="Bristol Stool Scale" Min="1" Max="7" Step="1" />
-            <FluentTextArea @bind-Value="entryModel.Notes" Label="Notes" />
-        </FluentEditForm>
-        <FluentButton OnClick="handleSave">Save</FluentButton>
-        <FluentAnchor Href="/">Cancel</FluentAnchor>
-    </FluentCard>
-</FluentGrid>
+<FluentCard Style="display:flex; justify-content: center; align-items: center">
+    <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Center" VerticalAlignment="VerticalAlignment.Center">
+        <EditForm Model="@entryModel">
+            <FluentDatePicker Required="true" @bind-Value="entryModel.Date" Label="Date" DisabledDateFunc="DisabledDay" Style="width:100%" />
+            <FluentTimePicker Required="true" @bind-Value="entryModel.Time" Label="Time" Style="width:100%" />
+            <FluentSlider @bind-Value="entryModel.BristolStoolScale" Label="Bristol Stool Scale" Min="1" Max="7" Step="1" Style="margin-bottom: 50px">
+                <FluentSliderLabel Position="1">1</FluentSliderLabel>
+                <FluentSliderLabel Position="2">2</FluentSliderLabel>
+                <FluentSliderLabel Position="3">3</FluentSliderLabel>
+                <FluentSliderLabel Position="4">4</FluentSliderLabel>
+                <FluentSliderLabel Position="5">5</FluentSliderLabel>
+                <FluentSliderLabel Position="6">6</FluentSliderLabel>
+                <FluentSliderLabel Position="7">7</FluentSliderLabel>
+            </FluentSlider>
+            <FluentTextArea @bind-Value="entryModel.Notes" Label="Notes" Style="width:100%" />
+            <FluentButton OnClick="handleSave" Style="width:100%">Save</FluentButton>
+            <FluentAnchor Href="/" Style="width:100%">Cancel</FluentAnchor>
+        </EditForm>
+    </FluentStack>
+</FluentCard>
 
 @code {
     [Parameter]
@@ -28,7 +36,7 @@
     {
         var entry = new Entry()
         {
-            UserId = session.CurrentUser.Id,
+            UserId = client.User.Id,
             Date = DateOnly.FromDateTime(entryModel.Date.Value),
             Time = TimeOnly.FromDateTime(entryModel.Time.Value),
             BristolStoolScale = (BristolStoolScale)(entryModel.BristolStoolScale),
@@ -55,7 +63,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        if (!session.IsLoggedIn)
+        if (!client.IsLoggedIn)
         {
             Navigation.NavigateTo("/signin");
         }

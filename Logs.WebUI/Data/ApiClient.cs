@@ -35,6 +35,17 @@ namespace Logs.WebUI.Data
         private static System.Lazy<System.Text.Json.JsonSerializerOptions> _settings = new System.Lazy<System.Text.Json.JsonSerializerOptions>(CreateSerializerSettings, true);
         private System.Text.Json.JsonSerializerOptions _instanceSettings;
 
+        public User User { get; private set; }
+        public void SetUser(User user)
+        {
+            User = user;
+        }
+        public void ClearUser()
+        {
+            User = null;
+        }
+        public bool IsLoggedIn => User != null;
+
         public void SetBearerToken(string token)
         {
             if (_httpClient.DefaultRequestHeaders.Contains("Authorization"))

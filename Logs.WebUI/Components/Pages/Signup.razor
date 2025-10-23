@@ -1,6 +1,6 @@
 ﻿@page "/signup"
 @inject Client client
-@inject SessionState session
+@* @inject SessionState session *@
 @inject NavigationManager Navigation
 @using System.ComponentModel.DataAnnotations
 
@@ -51,7 +51,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (session.IsLoggedIn)
+        if (client.IsLoggedIn)
         {
             Navigation.NavigateTo("/");
         }
@@ -82,8 +82,9 @@
                 }
             );
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            Console.WriteLine(e.Message);
             errorMessage = $"{userModel.Email} is already registered!";
             return;
         }

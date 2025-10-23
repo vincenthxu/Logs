@@ -1,6 +1,6 @@
 ﻿@page "/signin"
 @inject Client client
-@inject SessionState session
+@* @inject SessionState session *@
 @inject NavigationManager Navigation
 @using System.ComponentModel.DataAnnotations
 
@@ -46,7 +46,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        if (session.IsLoggedIn)
+        if (client.IsLoggedIn)
         {
             Navigation.NavigateTo("/");
         }
@@ -69,7 +69,7 @@
 
             client.SetBearerToken(response.AccessToken);
 
-            session.CurrentUser = await client.UsersGETByEmailAsync(userModel.Email);
+            client.SetUser(await client.UsersGETByEmailAsync(userModel.Email));
 
             Navigation.NavigateTo("/");
         }
