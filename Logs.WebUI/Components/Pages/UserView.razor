@@ -1,0 +1,70 @@
+﻿@page "/user"
+@inject Client client
+@* @inject SessionState session *@
+@inject NavigationManager Navigation
+@using System.ComponentModel.DataAnnotations
+
+<FluentCard Style="display:flex; justify-content: center; align-items: center">
+    <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Center" VerticalAlignment="VerticalAlignment.Center">
+        <EditForm Model="@userModel">
+            <FluentTextField @bind-Value="userModel.Id" Label="Id" Style="width:100%" Disabled="true" />
+            <FluentTextField @bind-Value="userModel.Email" Label="Email" Style="width:100%" Disabled="true" />
+            <FluentTextField @bind-Value="userModel.Name" Label="Name" Style="width:100%" />
+            <FluentDatePicker @bind-Value="userModel.DateOfBirth" Label="Date of birth" Style="width:100%" DisabledDateFunc="DisabledDay"/>
+            <FluentButton OnClick="handleSave" Style="width:100%">Save</FluentButton>
+            <FluentAnchor Href="/" Style="width:100%">Cancel</FluentAnchor>
+        </EditForm>
+    </FluentStack>
+</FluentCard>
+
+@code {
+    private UserViewModel userModel = new();
+
+    private async Task handleSave()
+    {
+        var user = new User()
+        {
+            Id = client.User.Id,
+            Email = userModel.Email,
+            Name = userModel.Name,
+            DateOfBirth = DateOnly.FromDateTime(userModel.DateOfBirth.Value),
+        };
+
+        await client.UsersPUTAsync(user.Id, user);
+
+        client.SetUser(await client.UsersGETAsync(user.Id));
+
+        Navigation.NavigateTo("/");
+    }
+
+    private bool DisabledDay(DateTime day)
+    {
+        return day > DateTime.Now;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        if (!client.IsLoggedIn)
+        {
+            Navigation.NavigateTo("/signin");
+        }
+
+        userModel.Name = client.User.Name;
+        userModel.Email = client.User.Email;
+        userModel.DateOfBirth = client.User.DateOfBirth.ToDateTime(new TimeOnly());
+        userModel.Id = client.User.Id.ToString();
+    }
+
+    public class UserViewModel
+    {
+        public string? Id { get; set; }
+        public string? Email { get; set; }
+
+        [Required(ErrorMessage = "Name is required")]
+        public string? Name { get; set; }
+
+        [Required(ErrorMessage = "Date of birth is required")]
+        public DateTime? DateOfBirth { get; set; }
+    }
+}
