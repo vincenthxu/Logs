@@ -103,9 +103,13 @@ namespace Logs.Api.Controllers
         public async Task<ActionResult<User>> PostUser(User user)
         {
             var result = _auth.Users.Where(u => u.Email == user.Email).ToList();
-            if (result.Count != 1 || _context.Users.SingleOrDefault(u => u.Email == user.Email) != null)
+            if (result.Count != 1)
             {
                 return Unauthorized();
+            }
+            if(_context.Users.SingleOrDefault(u => u.Email == user.Email) != null)
+            {
+                return Forbid();
             }
 
             // if user has invalid date of birth, return bad request
