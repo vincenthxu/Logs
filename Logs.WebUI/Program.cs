@@ -19,7 +19,6 @@ namespace Logs.WebUI
             builder.Services.AddSingleton<SessionState>(
                 new SessionState() {
                     CurrentUser = null,
-                    AccessToken = null
                 }
             );
 

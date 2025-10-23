@@ -1,5 +1,4 @@
 ﻿@page "/"
-@rendermode InteractiveServer
 @inject Client client
 @inject SessionState session
 @inject NavigationManager Navigation
@@ -44,7 +43,7 @@ else
     public async Task handleLogout()
     {
         session.CurrentUser = null;
-        session.AccessToken = null;
+        client.RemoveBearerToken();
 
         await client.LogoutAsync(new object());
 

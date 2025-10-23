@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Logs.Api.Data;
 using Logs.Api.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Logs.Api.Controllers
 {
@@ -20,6 +21,7 @@ namespace Logs.Api.Controllers
 
         // GET: api/Users
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             return await _context.Users.ToListAsync();
@@ -29,6 +31,7 @@ namespace Logs.Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
         public async Task<ActionResult<User>> GetUser(Guid id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -45,9 +48,10 @@ namespace Logs.Api.Controllers
         [HttpGet("byEmail/{email}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
         public async Task<ActionResult<User>> GetUserByEmail(string email)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == email);
             if (user == null)
             {
                 return NotFound();
@@ -60,6 +64,7 @@ namespace Logs.Api.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
         public async Task<IActionResult> PutUser(Guid id, User user)
         {
             // if user has invalid date of birth, return bad request
@@ -98,7 +103,7 @@ namespace Logs.Api.Controllers
         public async Task<ActionResult<User>> PostUser(User user)
         {
             var result = _auth.Users.Where(u => u.Email == user.Email).ToList();
-            if (result.Count != 1)
+            if (result.Count != 1 || _context.Users.SingleOrDefault(u => u.Email == user.Email) != null)
             {
                 return Unauthorized();
             }
@@ -117,6 +122,7 @@ namespace Logs.Api.Controllers
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Authorize]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             var user = await _context.Users.FindAsync(id);

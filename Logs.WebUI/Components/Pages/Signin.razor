@@ -1,5 +1,4 @@
 ﻿@page "/signin"
-@rendermode InteractiveServer
 @inject Client client
 @inject SessionState session
 @inject NavigationManager Navigation
@@ -66,10 +65,10 @@
                 Password = userModel.Password,
                 TwoFactorCode = "",
                 TwoFactorRecoveryCode = ""
-            }
-        );
+            });
 
-            session.AccessToken = response;
+            client.SetBearerToken(response.AccessToken);
+
             session.CurrentUser = await client.UsersGETByEmailAsync(userModel.Email);
 
             Navigation.NavigateTo("/");

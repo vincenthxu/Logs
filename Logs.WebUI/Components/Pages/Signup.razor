@@ -1,5 +1,4 @@
 ﻿@page "/signup"
-@rendermode InteractiveServer
 @inject Client client
 @inject SessionState session
 @inject NavigationManager Navigation
@@ -25,13 +24,19 @@
             <FluentDivider Style="width: 100%;" Role="DividerRole.Separator"></FluentDivider>
 
             Have an account?
-            
+
             <FluentNavLink Href="signin">Sign In</FluentNavLink>
 
             @if (successMessage != null)
             {
                 <h3 Style="color:green; margin-top:10px;">
                     @successMessage
+                </h3>
+            }
+            @if (errorMessage != null)
+            {
+                <h3 Style="color:red; margin-top:10px;">
+                    @errorMessage
                 </h3>
             }
         </FluentStack>
@@ -42,6 +47,7 @@
 @code {
     private UserModel userModel = new();
     private string? successMessage;
+    private string? errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
@@ -54,24 +60,34 @@
 
     private async Task HandleValidSubmit()
     {
-        await client.RegisterAsync(
-            new RegisterRequest()
-            {
-                Email = userModel.Email,
-                Password = userModel.Password
-            }
-        );
+        successMessage = null;
+        errorMessage = null;
 
-        await client.UsersPOSTAsync(
-            new User()
-            {
-                Name = userModel.Name,
-                Email = userModel.Email,
-                DateOfBirth = DateOnly.FromDateTime(userModel.DateOfBirth ?? DateTime.Today),
-            }
-        );
+        try
+        {
+            await client.RegisterAsync(
+                new RegisterRequest()
+                {
+                    Email = userModel.Email,
+                    Password = userModel.Password
+                }
+            );
 
-        // Simulate user registration logic
+            await client.UsersPOSTAsync(
+                new User()
+                {
+                    Name = userModel.Name,
+                    Email = userModel.Email,
+                    DateOfBirth = DateOnly.FromDateTime(userModel.DateOfBirth ?? DateTime.Today),
+                }
+            );
+        }
+        catch (Exception)
+        {
+            errorMessage = $"{userModel.Email} is already registered!";
+            return;
+        }
+
         successMessage = $"Welcome, {userModel.Name}! Your account has been created.";
     }
 
